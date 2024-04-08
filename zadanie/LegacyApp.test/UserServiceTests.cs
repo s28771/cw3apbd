@@ -1,42 +1,91 @@
-namespace LegacyApp.test;
-public class UserServiceTests
+
+
+namespace LegacyApp.Tests
 {
-    [Fact]
-    public void AddUser_ReturnsFalseWhenFirstNameIsEmpty()
+    public class UserServiceTests
     {
-// Arrange
-        var userService = new UserService();
-// Act
-        var result = userService.AddUser(
-            null,
-            "Kowalski",
-            "kowalski@kowal.com",
-            DateTime.Parse("2000-01-01"),
-            1
-        );
-// Assert
-        Assert.False(result);
-    }
-    
-    [Fact]
-    public void AddUser_ThrowsExceptionWhenClientDoesNotExist()
-    {
-// Arrange
-        var userService = new UserService();
-// Act
-        Action action = () =>
+        [Fact]
+        public void AddUser_ReturnsFalseWhenFirstNameIsEmpty()
         {
-            userService.AddUser(
+            var userService = new UserService();
+            var result = userService.AddUser(
+                null,
+                "Kowalski",
+                "kowalski@kowal.com",
+                DateTime.Parse("2000-01-01"),
+                1
+            );
+            Assert.False(result);
+        }
+
+        [Fact]
+        public void AddUser_ReturnsFalseWhenEmailIsInvalid()
+        {
+            var userService = new UserService();
+            var result = userService.AddUser(
+                "Jan",
+                "Kowalski",
+                "invalidemail", 
+                DateTime.Parse("2000-01-01"),
+                1
+            );
+            Assert.False(result);
+        }
+
+        [Fact]
+        public void AddUser_ReturnsFalseWhenUnderAge()
+        {
+            var userService = new UserService();
+            var result = userService.AddUser(
+                "Jan",
+                "Kowalski",
+                "kowalski@kowal.com",
+                DateTime.Today.AddYears(-20), 
+                1
+            );
+            Assert.False(result);
+        }
+
+        [Fact]
+        public void AddUser_ReturnsTrueForVeryImportantClient()
+        {
+            var userService = new UserService();
+            var result = userService.AddUser(
+                "Jan",
+                "Malewski",
+                "malewski@gmail.pl",
+                DateTime.Parse("1982-03-21"),
+                2 
+            );
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void AddUser_ReturnsTrueForImportantClientWithSufficientCreditLimit()
+        {
+            var userService = new UserService();
+            var result = userService.AddUser(
+                "Jan",
+                "Smith",
+                "smith@gmail.pl",
+                DateTime.Parse("1982-03-21"),
+                3 
+            );
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void AddUser_ThrowsExceptionWhenClientDoesNotExist()
+        {
+            var userService = new UserService();
+            Action action = () => userService.AddUser(
                 "Jan",
                 "Kowalski",
                 "kowalski@kowal.com",
                 DateTime.Parse("2000-01-01"),
-                100
+                100 
             );
-        };
-        
-        
-// Assert
-        Assert.Throws<ArgumentException>(action);
+            Assert.Throws<ArgumentException>(action);
+        }
     }
 }
